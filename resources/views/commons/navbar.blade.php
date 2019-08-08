@@ -14,11 +14,33 @@
                 <li class="nav-item"><a href="#" class="nav-link">Login</a></li>
             </ul>
             -->
-                        
+                
+            <!--            
             <ul class="nav navbar-nav navbar-right">
-                    <li>{!! link_to_route('signup.get', 'Signup', [], ['class' => 'nav-link']) !!}</li>
-                    <li><a href="#">Login</a></li>
+                
+                <li>{!! link_to_route('signup.get', 'Signup', [], ['class' => 'nav-link']) !!}</li>
+                <li class="nav-item"><a href="#" class="nav-link">Login</a></li>
+                リンクの表示が変なので、上のコードにしてみた <li><a href="#">Login</a></li>
             </ul>
+            -->
+            <!--ログアウトしてるときだけログイン、ログアウトのリンクを表示-->
+            <ul class="navbar-nav">
+                @if (Auth::check())
+                    <li class="nav-item"><a href="#" class="nav-link">Users</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ Auth::user()->name }}</a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li class="dropdown-item"><a href="#">My profile</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li class="dropdown-item">{!! link_to_route('logout.get', 'Logout') !!}</li>
+                        </ul>
+                    </li>
+                @else
+                    <li class="nav-item">{!! link_to_route('signup.get', 'Signup', [], ['class' => 'nav-link']) !!}</li>
+                    <li class="nav-item">{!! link_to_route('login', 'Login', [], ['class' => 'nav-link']) !!}</li>
+                @endif
+            </ul>
+            
         </div>
     </nav>
 </header>
