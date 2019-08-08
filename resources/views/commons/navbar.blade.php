@@ -26,11 +26,18 @@
             <!--ログアウトしてるときだけログイン、ログアウトのリンクを表示-->
             <ul class="navbar-nav">
                 @if (Auth::check())
-                    <li class="nav-item"><a href="#" class="nav-link">Users</a></li>
+                    <!--以下のリンクを追加したので、右のコードは不要になった：<li class="nav-item"><a href="#" class="nav-link">Users</a></li>-->
+                    <!--index（ユーザ一覧ページ）のリンクを追加-->
+                    <li class="nav-item">{!! link_to_route('users.index', 'Users', [], ['class' => 'nav-link']) !!}</li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ Auth::user()->name }}</a>
                         <ul class="dropdown-menu dropdown-menu-right">
+                            <!--以下、showのリンクを追加したので以下３行不要。
                             <li class="dropdown-item"><a href="#">My profile</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li class="dropdown-item">{!! link_to_route('logout.get', 'Logout') !!}</li>
+                            -->
+                            <li class="dropdown-item">{!! link_to_route('users.show', 'My profile', ['id' => Auth::id()]) !!}</li>
                             <li class="dropdown-divider"></li>
                             <li class="dropdown-item">{!! link_to_route('logout.get', 'Logout') !!}</li>
                         </ul>

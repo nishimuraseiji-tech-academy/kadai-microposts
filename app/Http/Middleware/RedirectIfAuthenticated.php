@@ -17,8 +17,12 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        //ログイン認証してるかどうかをif文で判断
         if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+
+            //リダイレクト先を以下に変更：return redirect('/home');
+            //ログインしてたら、/（トップページ）に自動的に飛ぶ
+            return redirect('/');
         }
 
         return $next($request);
