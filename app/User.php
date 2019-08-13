@@ -32,4 +32,63 @@ class User extends Authenticatable
     {
         return $this->hasMany(Micropost::class);
     }
+    
+    // 多対多の関係を以下追記
+    // ユーザがフォローしている関係をbelongsToManyで表現
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'user_follow', 'user_id', 'follow_id')->withTimestamps();
+    }
+
+    // ユーザがフォローされている関係をbelongsToManyで表現
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'user_follow', 'follow_id', 'user_id')->withTimestamps();
+    }
+    
+    // フォロー／フォロワーの関係を以下追記
+    // フォロー
+    public function follow($userId)
+    {
+        // 既にフォローしているかの確認
+        $exist = $this->is_following($userId);
+        // 相手が自分自身ではないかの確認
+        $its_me = $this->id == $userId;
+    
+        // exist：フォロー済み　もしくは $its_meがTrue（正しい）なら
+        if ($exist || $its_me) {
+            // 既にフォローしていれば何もしない
+            return false;
+        } else {
+            // 未フォローであればフォローする
+            $this->followings()->attach($userId);
+            return true;
+        }
+    }
+    
+    // アンフォロー
+    public function unfollow($userId)
+    {
+        // 既にフォローしているかの確認
+        $exist = $this->is_following($userId);
+        // 相手が自分自身ではないかの確認
+        $its_me = $this->id == $userId;
+    
+        // すでにフォローしてて、なおかつ相手は自分自身でないなら
+        if ($exist && !$its_me) {
+            // 既にフォローしていればフォローを外す
+            $this->followings()->detach($userId);
+            return true;
+        } else {
+            // 未フォローであれば何もしない
+            return false;
+        }
+    }
+    
+    // フォローしてるかどうかをfollow_id（フォローしたid）と自身のidで確認
+    public function is_following($userId)
+    {
+        return $this->followings()->where('follow_id', $userId)->exists();
+    }
+    
 }
