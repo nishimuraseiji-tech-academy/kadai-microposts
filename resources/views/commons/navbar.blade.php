@@ -8,21 +8,6 @@
         
         <div class="collapse navbar-collapse" id="nav-bar">
             <ul class="navbar-nav mr-auto"></ul>
-            <!--
-            <ul class="navbar-nav">
-                <li class="nav-item"><a href="#" class="nav-link">Signup</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Login</a></li>
-            </ul>
-            -->
-                
-            <!--            
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li>{!! link_to_route('signup.get', 'Signup', [], ['class' => 'nav-link']) !!}</li>
-                <li class="nav-item"><a href="#" class="nav-link">Login</a></li>
-                リンクの表示が変なので、上のコードにしてみた <li><a href="#">Login</a></li>
-            </ul>
-            -->
             <!--ログアウトしてるときだけログイン、ログアウトのリンクを表示-->
             <ul class="navbar-nav">
                 @if (Auth::check())
@@ -32,12 +17,8 @@
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ Auth::user()->name }}</a>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <!--以下、showのリンクを追加したので以下３行不要。
-                            <li class="dropdown-item"><a href="#">My profile</a></li>
-                            <li class="dropdown-divider"></li>
-                            <li class="dropdown-item">{!! link_to_route('logout.get', 'Logout') !!}</li>
-                            -->
                             <li class="dropdown-item">{!! link_to_route('users.show', 'My profile', ['id' => Auth::id()]) !!}</li>
+                            <li class="dropdown-item">{!! link_to_route('users.favorites', 'Favorites', ['id' => Auth::id()]) !!}</li>
                             <li class="dropdown-divider"></li>
                             <li class="dropdown-item">{!! link_to_route('logout.get', 'Logout') !!}</li>
                         </ul>

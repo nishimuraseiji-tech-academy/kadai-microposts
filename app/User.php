@@ -98,10 +98,66 @@ class User extends Authenticatable
         //２：pluckでカラム名取り出し
         //３：$follow_user_idsという配列として格納
         //４：follow_user_idsの配列に、ユーザ（自分）のidを追加
-        //５：Micropostのモデルに情報を飛ばす
+        //５：Micropostのモデルを使って、user_idとidが一致するツイートのみ抽出
         $follow_user_ids = $this->followings()->pluck('users.id')->toArray();
         $follow_user_ids[] = $this->id;
         return Micropost::whereIn('user_id', $follow_user_ids);
     }
     
+    /*以下、課題*/
+
+    /*多対多の関係（ユーザ側）*/
+    public function favorites()
+    {
+        return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id')->withTimestamps();
+    }
+    
+    public function favorite($micropostId)
+    {
+        // 既にお気に入りしているかの確認
+        $exist = $this->is_favorite($micropostId);
+        
+        if ($exist) {
+            // お気に入りしていれば何もしない
+            return false;
+            
+        } else {
+            // お気に入りしてなければ、お気に入りにする
+            $this->favorites()->attach($micropostId);
+            return true;
+        }
+    }
+
+    public function unfavorite($micropostId)
+    {
+        // 既にお気に入りしているかの確認
+        $exist = $this->is_favorite($micropostId);
+        
+        if ($exist) {
+            // お気に入りしていれば、お気に入りツイートを外す
+            $this->favorites()->detach($micropostId);
+            return true;
+            
+        } else {
+            // お気に入りしていないなら、お気に入りにする
+            return false;
+        }
+    }
+
+    public function is_favorite($micropostId)
+    {
+        return $this->favorites()->where('micropost_id', $micropostId)->exists();
+    }
+    
+    public function feed_favorites()
+    {
+        // micropostsテーブルのうち、お気に入りしてるidのみデータ保存
+        $favorite_microposts_ids = $this->favorites()->pluck('microposts.id')->toArray();
+        
+        // 自分のツイートのidも含む
+        $favorite_microposts_ids[] = $this->id;
+        
+        // お気に入りしてるツイートをMicropostモデルを使ってreturnする
+        return Micropost::whereIn('id', $favorite_microposts_ids);
+    }
 }

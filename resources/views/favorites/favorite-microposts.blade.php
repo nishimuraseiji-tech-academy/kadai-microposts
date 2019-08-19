@@ -1,5 +1,6 @@
 <ul class="media-list">
     @foreach ($microposts as $micropost)
+        @if (Auth::user()->is_favorite($micropost->id) )
         <li class="media mb-3">
             <img class="mr-2 rounded" src="{{ Gravatar::src($micropost->user->email, 50) }}" alt="">
             <div class="media-body">
@@ -27,6 +28,7 @@
                 </div>
             </div>
         </li>
+        @endif
     @endforeach
 </ul>
 {{ $microposts->render('pagination::bootstrap-4') }}

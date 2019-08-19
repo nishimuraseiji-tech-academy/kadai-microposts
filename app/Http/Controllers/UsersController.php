@@ -70,4 +70,20 @@ class UsersController extends Controller
         return view('users.followers', $data);
     }
     
+    /* 課題 */
+    // お気に入りの一覧を表示するアクション
+    public function favorites($id)
+    {
+        $user = User::find($id);
+        $microposts = $user->feed_favorites()->orderBy('created_at', 'desc')->paginate(10); 
+        
+        $data = [
+            'user' => $user,
+            'microposts' => $microposts,
+        ];
+
+        $data += $this->counts($user);
+
+        return view('users.favorites', $data);
+    }
 }
